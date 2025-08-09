@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for AWS Lambda function
+
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: The S3 bucket where the Lambda code is stored
+  S3Key:
+    Type: String
+    Description: The S3 key for the Lambda code
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  LambdaHelloWorldFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: HelloWorldFunction
+      Handler: index.sayHello
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: !Ref S3Key
+      Runtime: nodejs20.x
+      Timeout: 30
+
+Outputs:
+  LambdaName:
+    Value: !Ref LambdaHelloWorldFunction
+    Description: The name of the Lambda function
+  LambdaExecutionRole:
+    Value: !Ref LambdaExecutionRole
+    Description: The name of the Lambda execution role
+  LambdaExecutionRoleArn:
+    Value: !GetAtt LambdaExecutionRole.Arn
+    Description: The ARN of the Lambda execution role
