@@ -1,6 +1,6 @@
 const sayHello = () => {
     console.log("Hello world");
-    console.log("Log desde develop");
+    console.log("Rama feature con validaciones");
     return "Hello world";
 };
 
